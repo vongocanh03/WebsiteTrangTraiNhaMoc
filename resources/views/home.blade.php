@@ -91,7 +91,7 @@
         <!-- Giỏ hàng -->
         <div class="cart-sidebar p-4 bg-white rounded shadow-sm cart-fixed-mobile">
             <h4 class="mb-3">🛒 Giỏ hàng</h4>
-            <div id="cart-items" class="mb-3" style="max-height: 280px; overflow-y: auto;"></div>
+            <div id="cart-items" class="mb-3" style="max-height: 200px; overflow-y: auto;"></div>
             <p><strong>Tổng:</strong> <span id="cart-total">0 VNĐ</span></p>
             <button class="btn btn-success w-100 mt-2">Xác nhận đơn hàng</button>
         </div>
@@ -175,7 +175,18 @@
         </div>
     </div>
 
+    <script>
+        const originalParse = JSON.parse;
+        JSON.parse = function (value) {
+            try {
+                return originalParse.apply(this, arguments);
+            } catch (e) {
+                console.warn("⚠️ JSON.parse bị lỗi với giá trị:", value);
+                return value; // trả lại chuỗi thô để tránh lỗi
+            }
+        };
 
+    </script>
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -290,16 +301,22 @@
             cart.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'cart-item';
+
+                // Tạo nội dung HTML an toàn
                 div.innerHTML = `
-                <div>${item.name}</div>
-                
-                <div><strong>${(item.price * item.quantity).toLocaleString('vi-VN')} VNĐ</strong></div>
-                <div class="cart-controls">
-                    <button onclick="changeQuantity('${item.name}', -1)">−</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
-                </div>
-            `;
+            <div>${item.name}</div>
+            <div><strong>${(item.price * item.quantity).toLocaleString('vi-VN')} VNĐ</strong></div>
+            <div class="cart-controls">
+                <button class="decrease">−</button>
+                <span>${item.quantity}</span>
+                <button class="increase">+</button>
+            </div>
+        `;
+
+                // Gán sự kiện riêng biệt (tránh lỗi cú pháp)
+                div.querySelector('.decrease').addEventListener('click', () => changeQuantity(item.name, -1));
+                div.querySelector('.increase').addEventListener('click', () => changeQuantity(item.name, 1));
+
                 cartItems.appendChild(div);
 
                 total += item.price * item.quantity;
@@ -307,6 +324,7 @@
 
             document.getElementById('cart-total').innerText = total.toLocaleString('vi-VN') + ' VNĐ';
         }
+
         // Hàm render giỏ hàng trong modal
         function renderModalCart() {
             const modalCartItems = document.getElementById('modal-cart-items');
@@ -437,6 +455,11 @@
                         // Hiển thị Modal thành công
                         const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
+
+                        setTimeout(() => {
+                            document.body.removeAttribute('data-bs-overflow');
+                            document.body.removeAttribute('data-bs-padding-right');
+                        }, 100);
                     } else {
                         showCustomAlert("Có lỗi xảy ra. Vui lòng thử lại.", "error");
                     }

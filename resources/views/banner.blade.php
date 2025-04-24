@@ -275,7 +275,7 @@
 <body>
     <!-- Banner dành cho desktop -->
     <div class="desktop-banner d-none d-lg-flex">
-        <div class="desktop-banner-left" style="background-image: url('{{ asset('storage/images/banner-bg.jpg') }}');">
+        <div class="desktop-banner-left" style="background-image: url('{{ asset('storage/images/1.png') }}');">
             <div class="desktop-logo" style="background-image: url('{{ asset('storage/images/logonm.jpg') }}');"></div>
         </div>
         <div class="desktop-banner-right">
@@ -292,7 +292,7 @@
 
     <!-- Banner dành cho mobile -->
     <div class="mobile-banner"
-        style="background-image: url('{{ asset('storage/images/banner-bg.jpg') }}'); height: 56vw">
+        style="background-image: url('{{ asset('storage/images/1.png') }}'); height: 56vw">
         <div class="mobile-banner-overlay">
             <div class="mobile-logo" style="background-image: url('{{ asset('storage/images/logonm.jpg') }}');"></div>
         </div>

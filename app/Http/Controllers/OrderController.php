@@ -49,7 +49,7 @@ class OrderController extends Controller
             }
 
             // Gửi email xác nhận đơn hàng đến email cá nhân
-            Mail::to('trangtrainhamoc@gmail.com')->send(new OrderConfirmation($order));
+            Mail::to('anhhung05032003@gmail.com')->send(new OrderConfirmation($order));
 
             return response()->json(['success' => true]);
 
