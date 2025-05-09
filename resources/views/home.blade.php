@@ -137,8 +137,9 @@
                         <!-- Thêm trường Số lượng người -->
                         <div class="mb-3">
                             <label for="guest-count" class="form-label">Số lượng người</label>
-                            <input type="number" class="form-control" id="guest-count" required min="1">
+                            <input type="text" class="form-control" id="guest-count" name="guest_count" required>
                         </div>
+
 
                     </form>
                 </div>

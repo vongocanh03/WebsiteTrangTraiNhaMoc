@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
+    
     use HasFactory;
 
     // Các trường có thể gán hàng loạt

@@ -15,3 +15,4 @@ Route::resource('orders', OrderController::class);
 Route::get('/category/{id}', [HomeController::class, 'showCategory'])->name('category.show');
 // routes/web.php
 Route::post('/api/submit-order', [OrderController::class, 'submitOrder']);
+Route::get(uri: '/thongke', action: [OrderController::class, 'thongKeTatCaMon']);

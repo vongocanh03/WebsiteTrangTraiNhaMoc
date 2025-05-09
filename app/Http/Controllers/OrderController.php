@@ -21,7 +21,7 @@ class OrderController extends Controller
             'customer_phone' => 'required|string|max:255', // Đảm bảo trường này là bắt buộc
             'reservation_date' => 'required|date_format:d/m/Y', // Validate định dạng ngày dd/mm/yyyy
             'arrival_time' => 'required|date_format:H:i', // Validate giờ theo định dạng H:i (24h)    
-            'guest_count' => 'required|integer|min:1', // Số lượng người
+            'guest_count' => 'required|string|max:255',// Số lượng người
             'cart' => 'required|array', // Giỏ hàng bắt buộc
         ]);
 
@@ -50,7 +50,8 @@ class OrderController extends Controller
 
             // Gửi email xác nhận đơn hàng đến email cá nhân
             Mail::to('anhhung05032003@gmail.com')->send(new OrderConfirmation($order));
-
+            // ✅ Đánh dấu đơn hàng đã được xác nhận thành công
+            $order->update(['status' => 'pending']);
             return response()->json(['success' => true]);
 
         } catch (\Exception $e) {
@@ -63,5 +64,24 @@ class OrderController extends Controller
 
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function thongKeTatCaMon(Request $request)
+    {
+        $ngay = $request->input('ngay') ?? Carbon::today()->format('Y-m-d');
+
+        $monAn = OrderItem::select('product_name', \DB::raw('SUM(quantity) as tong_so_luong'))
+            ->whereHas('order', function ($query) use ($ngay) {
+                $query->whereDate('reservation_date', $ngay)
+                    ->where('status', 'pending'); // Chỉ tính đơn đã xác nhận
+            })
+            ->groupBy('product_name')
+            ->orderByDesc('tong_so_luong')
+            ->get();
+
+        return view('admin.thong-ke', [
+            'ngay' => $ngay,
+            'monAn' => $monAn
+        ]);
     }
 }
